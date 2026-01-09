@@ -35,15 +35,6 @@ qa = RetrievalQA.from_chain_type(
     return_source_documents=True
 )
 
-response = qa(query)
-
-Answer ONLY using the provided context.
-If the answer is not in the context, say "Not found in policy".
-Always cite document name and section.
-"Not found in current HR policies."
-if not response["source_documents"]:
-    return "Not found in HR policy documents." 
-
 def format_citations(source_documents):
     citations = []
     for doc in source_documents:
@@ -67,3 +58,10 @@ else:
     print("\nSource:")
     for cite in format_citations(response["source_documents"]):
         print(f"- {cite}")
+
+Answer ONLY using the provided context.
+If the answer is not in the context, say "Not found in policy".
+Always cite document name and section.
+"Not found in current HR policies."
+if not response["source_documents"]:
+    return "Not found in HR policy documents." 
