@@ -5,9 +5,15 @@ from langchain.vectorstores import FAISS
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 
+# ----------------------------
+# Load PDF document
+# ----------------------------
 loader = PyPDFLoader("LeavePolicy.pdf")
 documents = loader.load()
 
+# ----------------------------
+# Split into chunks
+# ----------------------------
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=500,
     chunk_overlap=100
@@ -15,6 +21,7 @@ splitter = RecursiveCharacterTextSplitter(
 
 chunks = splitter.split_documents(documents)
 
+# Add metadata for citations
 for chunk in chunks:
     chunk.metadata = {
         "document": "LeavePolicy.pdf",
@@ -22,6 +29,9 @@ for chunk in chunks:
         "page": chunk.metadata.get("page", "NA")
     }
 
+# ----------------------------
+# Create embeddings + vector store
+# ----------------------------
 embeddings = OpenAIEmbeddings()
 
 vectorstore = FAISS.from_documents(
@@ -33,6 +43,9 @@ retriever = vectorstore.as_retriever(
     search_kwargs={"k": 5}
 )
 
+# ----------------------------
+# LLM + RetrievalQA chain
+# ----------------------------
 llm = ChatOpenAI(
     model="gpt-4",
     temperature=0
@@ -44,6 +57,9 @@ qa = RetrievalQA.from_chain_type(
     return_source_documents=True
 )
 
+# ----------------------------
+# Citation formatter
+# ----------------------------
 def format_citations(source_documents):
     citations = []
     for doc in source_documents:
@@ -55,6 +71,9 @@ def format_citations(source_documents):
         )
     return citations
 
+# ----------------------------
+# Query
+# ----------------------------
 query = "How many casual leave days do I get?"
 
 response = qa(query)
