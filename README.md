@@ -22,6 +22,7 @@ splitter = RecursiveCharacterTextSplitter(
 chunks = splitter.split_documents(documents)
 
 # Add metadata for citations
+
 for chunk in chunks:
     chunk.metadata = {
         "document": "LeavePolicy.pdf",
