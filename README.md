@@ -43,6 +43,7 @@ Always cite document name and section.
 "Not found in current HR policies."
 if not response["source_documents"]:
     return "Not found in HR policy documents." 
+
 def format_citations(source_documents):
     citations = []
     for doc in source_documents:
