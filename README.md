@@ -42,4 +42,27 @@ If the answer is not in the context, say "Not found in policy".
 Always cite document name and section.
 "Not found in current HR policies."
 if not response["source_documents"]:
-    return "Not found in HR policy documents."
+    return "Not found in HR policy documents." 
+def format_citations(source_documents):
+    citations = []
+    for doc in source_documents:
+        meta = doc.metadata
+        citations.append(
+            f"{meta.get('document', 'Unknown')} | "
+            f"Section: {meta.get('section', 'N/A')} | "
+            f"Page: {meta.get('page', 'N/A')}"
+        )
+    return citations
+
+
+response = qa(query)
+
+if not response["source_documents"]:
+    print("Not found in HR policy documents.")
+else:
+    print("Answer:")
+    print(response["result"])
+
+    print("\nSource:")
+    for cite in format_citations(response["source_documents"]):
+        print(f"- {cite}")
